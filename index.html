@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Tortoise and the Rabbit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #4e9f3d 0%, #1e5128 50%, #191a19 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #4e9f3d 0%, #d8e9a8 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid #4e9f3d;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0 #1e5128;
+            animation: bounce 2s infinite;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            color: #1e5128;
+        }
+        
+        .book-container {
+            display: flex;
+            min-height: 500px;
+            position: relative;
+        }
+        
+        .page {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.5s ease;
+        }
+        
+        .left-page {
+            background: linear-gradient(to bottom right, #fff 0%, #e0f7fa 100%);
+            border-right: 2px dashed #4e9f3d;
+        }
+        
+        .right-page {
+            background: linear-gradient(to bottom left, #fff 0%, #f0f8e0 100%);
+        }
+        
+        .page-content {
+            max-width: 90%;
+            text-align: center;
+            z-index: 2;
+        }
+        
+        .page-title {
+            color: #1e5128;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 0 #d8e9a8;
+        }
+        
+        .page-text {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #555;
+        }
+        
+        .character {
+            font-size: 4rem;
+            margin: 15px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .race-track {
+            width: 90%;
+            height: 40px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #4e9f3d;
+        }
+        
+        .finish-line {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 10px;
+            background: repeating-linear-gradient(45deg, #000, #000 5px, #fff 5px, #fff 10px);
+            z-index: 2;
+        }
+        
+        .racer {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.8rem;
+            z-index: 3;
+            transition: left 5s linear;
+        }
+        
+        .interactive-element {
+            background: #4e9f3d;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 0 #1e5128;
+        }
+        
+        .interactive-element:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 0 #1e5128;
+        }
+        
+        .interactive-element:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #1e5128;
+        }
+        
+        .book-controls {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #d8e9a8;
+        }
+        
+        .control-btn {
+            background: #1e5128;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin: 0 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 0 #191a19;
+        }
+        
+        .control-btn:hover {
+            background: #191a19;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 0 #191a19;
+        }
+        
+        .control-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #191a19;
+        }
+        
+        .control-btn i {
+            margin: 0 8px;
+        }
+        
+        .animation-area {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(78, 159, 61, 0.2);
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .leaf {
+            position: absolute;
+            color: #4e9f3d;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .page-counter {
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            background: rgba(78, 159, 61, 0.8);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 1.1rem;
+            margin-top: 20px;
+        }
+        
+        /* Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes hop {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes crawl {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(10px); }
+        }
+        
+        @keyframes colorChange {
+            0% { color: #4e9f3d; }
+            25% { color: #1e5128; }
+            50% { color: #d8e9a8; }
+            75% { color: #191a19; }
+            100% { color: #4e9f3d; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Media Queries for Responsiveness */
+        @media (max-width: 900px) {
+            h1 {
+                font-size: 2.4rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .page-text {
+                font-size: 1.2rem;
+            }
+            
+            .character {
+                font-size: 3.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .book-container {
+                flex-direction: column;
+            }
+            
+            .left-page, .right-page {
+                min-height: 400px;
+                border-right: none;
+                border-bottom: 2px dashed #4e9f3d;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .control-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            .page {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 15px;
+            }
+            
+            header {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .page-title {
+                font-size: 1.6rem;
+                margin-bottom: 15px;
+            }
+            
+            .page-text {
+                font-size: 1.1rem;
+                margin-bottom: 20px;
+            }
+            
+            .character {
+                font-size: 3rem;
+            }
+            
+            .interactive-element {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            
+            .book-controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .control-btn {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+            
+            .race-track {
+                height: 35px;
+            }
+            
+            .racer {
+                font-size: 1.5rem;
+            }
+            
+            .page-counter {
+                font-size: 0.9rem;
+                padding: 3px 12px;
+                right: 15px;
+            }
+            
+            footer {
+                font-size: 0.9rem;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .page-title {
+                font-size: 1.4rem;
+            }
+            
+            .page-text {
+                font-size: 1rem;
+            }
+            
+            .character {
+                font-size: 2.5rem;
+            }
+            
+            .interactive-element {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
+            
+            .race-track {
+                height: 30px;
+            }
+            
+            .racer {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Sound Controls */
+        .sound-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+        
+        .sound-btn {
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 576px) {
+            .sound-controls {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .sound-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Popup */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            display: none;
+        }
+        
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 80%;
+            position: relative;
+        }
+        
+        .close-popup {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 576px) {
+            .popup-content {
+                padding: 20px;
+                width: 90%;
+            }
+            
+            .close-popup {
+                top: 5px;
+                right: 10px;
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Loading state for audio */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The Tortoise and the Rabbit</h1>
+            <p class="subtitle">A Timeless Fable About Persistence</p>
+        </header>
+        
+        <div class="sound-controls">
+            <button class="sound-btn" id="sound-toggle"><i class="fas fa-volume-up"></i></button>
+        </div>
+        
+        <div class="book-container">
+            <!-- Page 1 -->
+            <div class="page left-page" id="page1">
+                <div class="animation-area" id="animation-area-1"></div>
+                <div class="page-content">
+                    <h2 class="page-title">The Boastful Rabbit</h2>
+                    <div class="character">🐰</div>
+                    <p class="page-text">There once was a speedy rabbit who loved to boast about how fast he could run. He would make fun of the slow-moving tortoise.</p>
+                    <button class="interactive-element" onclick="rabbitBoast()">Hear Rabbit Boast</button>
+                    <div class="page-counter">Page 1 of 5</div>
+                </div>
+            </div>
+            
+            <!-- Page 2 -->
+            <div class="page right-page" id="page2" style="display: none;">
+                <div class="animation-area" id="animation-area-2"></div>
+                <div class="page-content">
+                    <h2 class="page-title">The Challenge</h2>
+                    <div class="character">🐢</div>
+                    <p class="page-text">Tired of Rabbit's teasing, Tortoise said, "I may be slow, but I can beat you in a race." Rabbit laughed and agreed to the race.</p>
+                    <button class="interactive-element" onclick="tortoiseChallenge()">Accept Challenge</button>
+                    <div class="page-counter">Page 2 of 5</div>
+                </div>
+            </div>
+            
+            <!-- Page 3 -->
+            <div class="page left-page" id="page3" style="display: none;">
+                <div class="animation-area" id="animation-area-3"></div>
+                <div class="page-content">
+                    <h2 class="page-title">The Race Begins</h2>
+                    <div class="race-track">
+                        <div class="finish-line"></div>
+                        <div class="racer" id="tortoise-racer">🐢</div>
+                        <div class="racer" id="rabbit-racer">🐰</div>
+                    </div>
+                    <p class="page-text">The race started! Rabbit zoomed ahead while Tortoise plodded along slowly but steadily.</p>
+                    <button class="interactive-element" onclick="startRace()">Start Race</button>
+                    <div class="page-counter">Page 3 of 5</div>
+                </div>
+            </div>
+            
+            <!-- Page 4 -->
+            <div class="page right-page" id="page4" style="display: none;">
+                <div class="animation-area" id="animation-area-4"></div>
+                <div class="page-content">
+                    <h2 class="page-title">Rabbit's Mistake</h2>
+                    <div class="character">😴</div>
+                    <p class="page-text">Seeing his huge lead, Rabbit decided to take a nap. "I can easily win after a little rest," he thought, and soon fell fast asleep.</p>
+                    <button class="interactive-element" onclick="rabbitNap()">Take a Nap</button>
+                    <div class="page-counter">Page 4 of 5</div>
+                </div>
+            </div>
+            
+            <!-- Page 5 -->
+            <div class="page left-page" id="page5" style="display: none;">
+                <div class="animation-area" id="animation-area-5"></div>
+                <div class="page-content">
+                    <h2 class="page-title">Slow and Steady Wins</h2>
+                    <div class="character">🏆</div>
+                    <p class="page-text">While Rabbit slept, Tortoise continued his slow but steady pace. He passed the sleeping Rabbit and crossed the finish line first!</p>
+                    <button class="interactive-element" onclick="celebrateWin()">Celebrate Victory</button>
+                    <div class="page-counter">Page 5 of 5</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="book-controls">
+            <button class="control-btn" id="prev-btn"><i class="fas fa-arrow-left"></i> Previous</button>
+            <span id="page-indicator" style="padding: 0 20px; font-size: 1.2rem; display: flex; align-items: center;">
+                Page 1 of 5
+            </span>
+            <button class="control-btn" id="next-btn">Next <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+    
+    <div class="popup" id="congrats-popup">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closePopup()">&times;</span>
+            <h2>Congratulations!</h2>
+            <div style="font-size: 4rem; margin: 20px 0;">🎉🐢🏆</div>
+            <p>You've completed the story of The Tortoise and the Rabbit!</p>
+            <p>Remember: Slow and steady wins the race!</p>
+            <button class="interactive-element" onclick="closePopup()">Read Again</button>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Created with ❤️ for kids who love stories | © 2023 Aesop's Fables</p>
+    </footer>
+
+    <!-- Audio elements with fallback sources -->
+    <audio id="background-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <source src="fallback-music.ogg" type="audio/ogg">
+    </audio>
+    
+    <audio id="sound-effect">
+        <source src="" type="audio/mpeg">
+        <source src="" type="audio/ogg">
+    </audio>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 5;
+        let soundEnabled = true;
+        const backgroundMusic = document.getElementById('background-music');
+        const soundEffect = document.getElementById('sound-effect');
+        
+        // Create animated elements for each page
+        function createAnimatedElements() {
+            for (let i = 1; i <= totalPages; i++) {
+                const area = document.getElementById(`animation-area-${i}`);
+                if (!area) continue;
+                
+                // Create leaves for each page
+                for (let j = 0; j < 8; j++) {
+                    const leaf = document.createElement('div');
+                    leaf.classList.add('leaf');
+                    leaf.innerHTML = '🍃';
+                    leaf.style.left = `${Math.random() * 100}%`;
+                    leaf.style.top = `${Math.random() * 100}%`;
+                    leaf.style.fontSize = `${Math.random() * 15 + 10}px`;
+                    leaf.style.animationDelay = `${Math.random() * 3}s`;
+                    area.appendChild(leaf);
+                }
+                
+                // Create bubbles for some pages
+                if (i === 2 || i === 4) {
+                    for (let j = 0; j < 5; j++) {
+                        const bubble = document.createElement('div');
+                        bubble.classList.add('bubble');
+                        const size = Math.random() * 30 + 10;
+                        bubble.style.width = `${size}px`;
+                        bubble.style.height = `${size}px`;
+                        bubble.style.left = `${Math.random() * 100}%`;
+                        bubble.style.top = `${Math.random() * 100}%`;
+                        bubble.style.animationDelay = `${Math.random() * 5}s`;
+                        area.appendChild(bubble);
+                    }
+                }
+            }
+        }
+        
+        // Navigate to a specific page
+        function goToPage(pageNumber) {
+            if (pageNumber < 1 || pageNumber > totalPages) return;
+            
+            // Hide all pages
+            for (let i = 1; i <= totalPages; i++) {
+                document.getElementById(`page${i}`).style.display = 'none';
+            }
+            
+            // Show the current page
+            document.getElementById(`page${pageNumber}`).style.display = 'flex';
+            
+            // Apply animation
+            document.getElementById(`page${pageNumber}`).style.animation = 'slideIn 0.5s forwards';
+            
+            // Update page indicator
+            document.getElementById('page-indicator').textContent = `Page ${pageNumber} of ${totalPages}`;
+            
+            currentPage = pageNumber;
+            
+            // Show congratulations on last page
+            if (pageNumber === 5) {
+                setTimeout(() => {
+                    document.getElementById('congrats-popup').style.display = 'flex';
+                }, 1000);
+            }
+        }
+        
+        // Next page function
+        function nextPage() {
+            if (currentPage < totalPages) {
+                goToPage(currentPage + 1);
+            }
+        }
+        
+        // Previous page function
+        function prevPage() {
+            if (currentPage > 1) {
+                goToPage(currentPage - 1);
+            }
+        }
+        
+        // Interactive functions for each page
+        function rabbitBoast() {
+            const rabbit = document.querySelector('#page1 .character');
+            rabbit.style.animation = 'none';
+            void rabbit.offsetWidth; // Trigger reflow
+            rabbit.style.animation = 'hop 0.5s ease-in-out 3 forwards';
+            
+            // Play sound
+            if (soundEnabled) {
+                try {
+                    soundEffect.src = 'https://assets.mixkit.co/sfx/preview/mixkit-bunny-rabbit-squeal-1125.mp3';
+                    soundEffect.play().catch(e => console.log("Audio play failed:", e));
+                } catch (e) {
+                    console.error("Sound error:", e);
+                }
+            }
+            
+            // Change text temporarily
+            const originalText = document.querySelector('#page1 .page-text').textContent;
+            document.querySelector('#page1 .page-text').textContent = '"I\'m the fastest animal in the forest! No one can beat me in a race!" boasted Rabbit.';
+            
+            // Add some hopping effects
+            const area = document.getElementById('animation-area-1');
+            for (let i = 0; i < 3; i++) {
+                const hopEffect = document.createElement('div');
+                hopEffect.innerHTML = '🐰';
+                hopEffect.style.position = 'absolute';
+                hopEffect.style.left = `${Math.random() * 50 + 25}%`;
+                hopEffect.style.top = `${Math.random() * 50 + 25}%`;
+                hopEffect.style.fontSize = '2rem';
+                hopEffect.style.animation = 'hop 1s ease-in-out forwards';
+                area.appendChild(hopEffect);
+                
+                // Remove after animation completes
+                setTimeout(() => {
+                    if (hopEffect.parentNode) {
+                        hopEffect.remove();
+                    }
+                }, 1000);
+            }
+            
+            // Revert after delay
+            setTimeout(() => {
+                document.querySelector('#page1 .page-text').textContent = originalText;
+            }, 3000);
+        }
+        
+        function tortoiseChallenge() {
+            const tortoise = document.querySelector('#page2 .character');
+            tortoise.style.animation = 'none';
+            void tortoise.offsetWidth; // Trigger reflow
+            tortoise.style.animation = 'crawl 2s ease-in-out infinite';
+            
+            // Play sound
+            if (soundEnabled) {
+                try {
+                    soundEffect.src = 'https://assets.mixkit.co/sfx/preview/mixkit-reptile-style-vocalization-1171.mp3';
+                    soundEffect.play().catch(e => console.log("Audio play failed:", e));
+                } catch (e) {
+                    console.error("Sound error:", e);
+                }
+            }
+            
+            // Change text temporarily
+            const originalText = document.querySelector('#page2 .page-text').textContent;
+            document.querySelector('#page2 .page-text').textContent = '"Let\'s have a race tomorrow. Slow and steady wins the race," said Tortoise calmly.';
+            
+            // Revert after delay
+            setTimeout(() => {
+                document.querySelector('#page2 .page-text').textContent = originalText;
+            }, 3000);
+        }
+        
+        function startRace() {
+            const tortoiseRacer = document.getElementById('tortoise-racer');
+            const rabbitRacer = document.getElementById('rabbit-racer');
+            
+            // Reset positions
+            tortoiseRacer.style.left = '10px';
+            rabbitRacer.style.left = '10px';
+            
+            // Play sound
+            if (soundEnabled) {
+                try {
+                    soundEffect.src = 'https://assets.mixkit.co/sfx/preview/mixkit-starting-shot-1004.mp3';
+                    soundEffect.play().catch(e => console.log("Audio play failed:", e));
+                } catch (e) {
+                    console.error("Sound error:", e);
+                }
+            }
+            
+            // Animate rabbit
+            rabbitRacer.style.transition = 'left 2s ease-in';
+            rabbitRacer.style.left = '80%';
+            
+            // Animate tortoise more slowly
+            setTimeout(() => {
+                tortoiseRacer.style.transition = 'left 8s linear';
+                tortoiseRacer.style.left = 'calc(100% - 40px)';
+            }, 1000);
+            
+            // Move to next page after race
+            setTimeout(() => {
+                nextPage();
+            }, 4000);
+        }
+        
+        function rabbitNap() {
+            const rabbit = document.querySelector('#page4 .character');
+            rabbit.style.animation = 'none';
+            void rabbit.offsetWidth; // Trigger reflow
+            
+            // Play sound
+            if (soundEnabled) {
+                try {
+                    soundEffect.src = 'https://assets.mixkit.co/sfx/preview/mixkit-snoring-sleep-1250.mp3';
+                    soundEffect.play().catch(e => console.log("Audio play failed:", e));
+                } catch (e) {
+                    console.error("Sound error:", e);
+                }
+            }
+            
+            // Add ZZZ effects
+            const area = document.getElementById('animation-area-4');
+            for (let i = 0; i < 3; i++) {
+                const zzz = document.createElement('div');
+                zzz.innerHTML = '💤';
+                zzz.style.position = 'absolute';
+                zzz.style.left = `${40 + i*10}%`;
+                zzz.style.top = `${30}%`;
+                zzz.style.fontSize = '2rem';
+                zzz.style.animation = 'float 2s ease-in-out infinite';
+                zzz.style.animationDelay = `${i * 0.3}s`;
+                area.appendChild(zzz);
+            }
+            
+            // Change text temporarily
+            const originalText = document.querySelector('#page4 .page-text').textContent;
+            document.querySelector('#page4 .page-text').textContent = 'Rabbit slept so soundly that he didn\'t notice when Tortoise quietly passed by him.';
+            
+            // Revert after delay
+            setTimeout(() => {
+                document.querySelector('#page4 .page-text').textContent = originalText;
+            }, 3000);
+            
+            // Move to next page after nap
+            setTimeout(() => {
+                nextPage();
+            }, 4000);
+        }
+        
+        function celebrateWin() {
+            const area = document.getElementById('animation-area-5');
+            for (let i = 0; i < 10; i++) {
+                const confetti = document.createElement('div');
+                confetti.innerHTML = '🎉';
+                confetti.style.position = 'absolute';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.top = `${Math.random() * 100}%`;
+                confetti.style.fontSize = `${Math.random() * 25 + 15}px`;
+                confetti.style.animation = 'float 2s ease-in-out forwards';
+                area.appendChild(confetti);
+            }
+            
+            // Play sound
+            if (soundEnabled) {
+                try {
+                    soundEffect.src = 'https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3';
+                    soundEffect.play().catch(e => console.log("Audio play failed:", e));
+                } catch (e) {
+                    console.error("Sound error:", e);
+                }
+            }
+            
+            // Make the trophy pulse
+            const trophy = document.querySelector('#page5 .character');
+            trophy.style.animation = 'bounce 0.5s ease-in-out infinite';
+            
+            // Change text temporarily
+            const originalText = document.querySelector('#page5 .page-text').textContent;
+            document.querySelector('#page5 .page-text').textContent = 'When Rabbit finally woke up, he was shocked to see Tortoise had won! He learned that slow and steady really does win the race.';
+            
+            // Revert after delay
+            setTimeout(() => {
+                document.querySelector('#page5 .page-text').textContent = originalText;
+            }, 4000);
+        }
+        
+        function closePopup() {
+            document.getElementById('congrats-popup').style.display = 'none';
+            goToPage(1);
+        }
+        
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const soundIcon = document.querySelector('#sound-toggle i');
+            
+            if (soundEnabled) {
+                soundIcon.className = 'fas fa-volume-up';
+                try {
+                    backgroundMusic.play().catch(e => console.log("Background music play failed:", e));
+                } catch (e) {
+                    console.error("Music error:", e);
+                }
+            } else {
+                soundIcon.className = 'fas fa-volume-mute';
+                backgroundMusic.pause();
+            }
+        }
+        
+        // Initialize the book
+        document.addEventListener('DOMContentLoaded', function() {
+            createAnimatedElements();
+            
+            // Button event listeners
+            document.getElementById('next-btn').addEventListener('click', nextPage);
+            document.getElementById('prev-btn').addEventListener('click', prevPage);
+            document.getElementById('sound-toggle').addEventListener('click', toggleSound);
+            
+            // Start background music with user interaction
+            backgroundMusic.volume = 0.3;
+            
+            // Modern browsers require user interaction to play audio
+            document.body.addEventListener('click', function initAudio() {
+                try {
+                    backgroundMusic.play().then(() => {
+                        console.log("Background music started");
+                    }).catch(e => {
+                        console.log("Autoplay prevented:", e);
+                    });
+                } catch (e) {
+                    console.error("Music initialization error:", e);
+                }
+                document.body.removeEventListener('click', initAudio);
+            }, { once: true });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'ArrowRight') {
+                    nextPage();
+                } else if (event.key === 'ArrowLeft') {
+                    prevPage();
+                }
+            });
+            
+            // Touch swipe support for mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.querySelector('.book-container').addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            document.querySelector('.book-container').addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                if (touchEndX < touchStartX - 50) {
+                    nextPage();
+                }
+                if (touchEndX > touchStartX + 50) {
+                    prevPage();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
